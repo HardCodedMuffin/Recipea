@@ -5,15 +5,25 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:authentication_repository/authentication_repository.dart';
+import 'package:bloc/bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:recipea/main.dart';
+import 'package:recipea/app/app.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(App());
+
+    Bloc.observer = AppBlocObserver();
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    final authenticationRepository = AuthenticationRepository();
+    await authenticationRepository.user.first;
+    await tester
+        .pumpWidget(App(authenticationRepository: authenticationRepository));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
