@@ -1,9 +1,10 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:recipea/app/user_interface/home/home.dart';
+import 'package:recipea/app/user_interface/profile/profile.dart';
+import 'package:recipea/app/user_interface/search/search.dart';
 
-import 'package:recipea/home/home.dart';
-import 'package:recipea/profile/profile.dart';
-import 'package:recipea/search/search.dart';
+import '../user_interface/meal_planner/meal_planner.dart';
 
 class AppBarParams {
   AppBarParams({
@@ -41,6 +42,7 @@ class AppNavigationState extends State<AppNavigation> {
     GlobalKey(),
     GlobalKey(),
     GlobalKey(),
+    GlobalKey(),
   ];
 
   PageController? _pageController;
@@ -75,7 +77,8 @@ class AppNavigationState extends State<AppNavigation> {
         children: <Widget>[
           HomePage(key: _pageKeys[0]),
           SearchPage(key: _pageKeys[1]),
-          ProfilePage(key: _pageKeys[2])
+          MealPlannerPage(key: _pageKeys[2]),
+          ProfilePage(key: _pageKeys[3])
         ],
       ),
       bottomNavigationBar: CurvedNavigationBar(
@@ -85,6 +88,7 @@ class AppNavigationState extends State<AppNavigation> {
         items: const <Widget>[
           Icon(Icons.home_outlined, size: 30),
           Icon(Icons.search_outlined, size: 30),
+          Icon(Icons.restaurant_menu_outlined, size: 30),
           Icon(Icons.perm_identity, size: 30),
         ],
         color: Colors.white,

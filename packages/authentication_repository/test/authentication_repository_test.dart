@@ -108,7 +108,7 @@ void main() {
     group('signUp', () {
       setUp(() {
         when(
-              () => firebaseAuth.createUserWithEmailAndPassword(
+          () => firebaseAuth.createUserWithEmailAndPassword(
             email: any(named: 'email'),
             password: any(named: 'password'),
           ),
@@ -118,7 +118,7 @@ void main() {
       test('calls createUserWithEmailAndPassword', () async {
         await authenticationRepository.signUp(email: email, password: password);
         verify(
-              () => firebaseAuth.createUserWithEmailAndPassword(
+          () => firebaseAuth.createUserWithEmailAndPassword(
             email: email,
             password: password,
           ),
@@ -133,18 +133,18 @@ void main() {
       });
 
       test('throws SignUpFailure when createUserWithEmailAndPassword throws',
-              () async {
-            when(
-                  () => firebaseAuth.createUserWithEmailAndPassword(
-                email: any(named: 'email'),
-                password: any(named: 'password'),
-              ),
-            ).thenThrow(Exception());
-            expect(
-              authenticationRepository.signUp(email: email, password: password),
-              throwsA(isA<SignUpFailure>()),
-            );
-          });
+          () async {
+        when(
+          () => firebaseAuth.createUserWithEmailAndPassword(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+          ),
+        ).thenThrow(Exception());
+        expect(
+          authenticationRepository.signUp(email: email, password: password),
+          throwsA(isA<SignUpFailure>()),
+        );
+      });
     });
 
     group('loginWithGoogle', () {
@@ -188,7 +188,7 @@ void main() {
     group('logInWithEmailAndPassword', () {
       setUp(() {
         when(
-              () => firebaseAuth.signInWithEmailAndPassword(
+          () => firebaseAuth.signInWithEmailAndPassword(
             email: any(named: 'email'),
             password: any(named: 'password'),
           ),
@@ -201,7 +201,7 @@ void main() {
           password: password,
         );
         verify(
-              () => firebaseAuth.signInWithEmailAndPassword(
+          () => firebaseAuth.signInWithEmailAndPassword(
             email: email,
             password: password,
           ),
@@ -220,9 +220,9 @@ void main() {
 
       test(
           'throws LogInWithEmailAndPasswordFailure '
-              'when signInWithEmailAndPassword throws', () async {
+          'when signInWithEmailAndPassword throws', () async {
         when(
-              () => firebaseAuth.signInWithEmailAndPassword(
+          () => firebaseAuth.signInWithEmailAndPassword(
             email: any(named: 'email'),
             password: any(named: 'password'),
           ),
@@ -277,7 +277,7 @@ void main() {
           emitsInOrder(const <User>[user]),
         );
         verify(
-              () => cache.write(
+          () => cache.write(
             key: AuthenticationRepository.userCacheKey,
             value: user,
           ),
@@ -288,7 +288,7 @@ void main() {
     group('currentUser', () {
       test('returns User.empty when cached user is null', () {
         when(
-              () => cache.read(key: AuthenticationRepository.userCacheKey),
+          () => cache.read(key: AuthenticationRepository.userCacheKey),
         ).thenReturn(null);
         expect(
           authenticationRepository.currentUser,
@@ -298,7 +298,7 @@ void main() {
 
       test('returns User when cached user is not null', () async {
         when(
-              () => cache.read(key: AuthenticationRepository.userCacheKey),
+          () => cache.read(key: AuthenticationRepository.userCacheKey),
         ).thenReturn(user);
         expect(authenticationRepository.currentUser, equals(user));
       });

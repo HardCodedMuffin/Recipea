@@ -52,3 +52,6 @@ GoogleService-Info.plist
 # Firebase Hosting
 .firebaserc
 firebase-debug.log
+
+# External Services (ex. APIs)
+lib/app/utilities/keys/
