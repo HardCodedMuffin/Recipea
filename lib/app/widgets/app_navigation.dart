@@ -6,18 +6,6 @@ import 'package:recipea/app/user_interface/search/search.dart';
 
 import '../user_interface/meal_planner/meal_planner.dart';
 
-class AppBarParams {
-  AppBarParams({
-    this.title,
-    this.actions,
-    this.backgroundColor,
-  });
-
-  final Widget? title;
-  final List<Widget>? actions;
-  final Color? backgroundColor;
-}
-
 class AppNavigation extends StatefulWidget {
   const AppNavigation({
     Key? key,
@@ -38,7 +26,8 @@ class AppNavigation extends StatefulWidget {
 
 class AppNavigationState extends State<AppNavigation> {
   final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
-  final List<GlobalKey<AppNavigationStateMixin>> _pageKeys = [
+  final List<GlobalKey> _pageKeys = [
+    GlobalKey(),
     GlobalKey(),
     GlobalKey(),
     GlobalKey(),
@@ -46,12 +35,7 @@ class AppNavigationState extends State<AppNavigation> {
   ];
 
   PageController? _pageController;
-  AppBarParams? _params;
   int? _page;
-
-  set params(AppBarParams value) {
-    setState(() => _params = value);
-  }
 
   @override
   void initState() {
@@ -59,26 +43,23 @@ class AppNavigationState extends State<AppNavigation> {
     _page = widget.initialPage;
     _pageController = PageController(initialPage: _page!);
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      _pageKeys[0].currentState?.onPageVisible();
+      _pageKeys[0].currentState!;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: _params?.title,
-        actions: _params?.actions,
-        backgroundColor: _params?.backgroundColor,
-      ),
+      extendBody: true,
       body: PageView(
         controller: _pageController,
         onPageChanged: _onPageChanged,
         children: <Widget>[
           HomePage(key: _pageKeys[0]),
           SearchPage(key: _pageKeys[1]),
-          MealPlannerPage(key: _pageKeys[2]),
-          ProfilePage(key: _pageKeys[3])
+          SearchPage(key: _pageKeys[2]),
+          MealPlannerPage(key: _pageKeys[3]),
+          ProfilePage(key: _pageKeys[4])
         ],
       ),
       bottomNavigationBar: CurvedNavigationBar(
@@ -88,10 +69,11 @@ class AppNavigationState extends State<AppNavigation> {
         items: const <Widget>[
           Icon(Icons.home_outlined, size: 30),
           Icon(Icons.search_outlined, size: 30),
+          Icon(Icons.add, size: 30),
           Icon(Icons.restaurant_menu_outlined, size: 30),
           Icon(Icons.perm_identity, size: 30),
         ],
-        color: Colors.white,
+        color: Theme.of(context).bottomAppBarColor,
         buttonBackgroundColor: Colors.white,
         backgroundColor: Colors.transparent,
         animationCurve: Curves.easeInOut,
@@ -110,7 +92,7 @@ class AppNavigationState extends State<AppNavigation> {
 
   void _onPageChanged(int? page) {
     setState(() => _page = page);
-    _pageKeys[_page!].currentState!.onPageVisible();
+    _pageKeys[_page!].currentState!;
   }
 
   void _onBottomNavItemPressed(int index) {
@@ -121,8 +103,4 @@ class AppNavigationState extends State<AppNavigation> {
       curve: Curves.fastOutSlowIn,
     );
   }
-}
-
-mixin AppNavigationStateMixin<T extends StatefulWidget> on State<T> {
-  void onPageVisible();
 }

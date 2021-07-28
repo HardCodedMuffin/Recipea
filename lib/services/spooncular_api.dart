@@ -2,8 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:recipea/app/utilities/keys/spooncular_api.dart';
 import 'package:recipea/models/models.dart';
+
+import '../app/utilities/keys/spooncular_api.dart';
 
 class APIService {
   APIService._instantiate();
@@ -12,55 +13,56 @@ class APIService {
 
   final String _baseUrl = 'api.spoonacular.com';
 
-  Future<MealPlan> generateMealPlan(
-      {required int targetCalories, required String diet}) async {
+  // Generate Meal Plan
+  Future<MealPlan> generateMealPlan({int? targetCalories, String? diet}) async {
     if (diet == 'None') diet = '';
-    var parameters = <String, String>{
+    Map<String, String?> parameters = {
       'timeFrame': 'day',
       'targetCalories': targetCalories.toString(),
       'diet': diet,
-      'apiKey': apiKey,
+      'apiKey': apiKey2,
     };
-    var uri = Uri.https(
+    Uri uri = Uri.https(
       _baseUrl,
       '/recipes/mealplans/generate',
       parameters,
     );
-    var headers = <String, String>{
+    Map<String, String> headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
     };
 
     try {
       var response = await http.get(uri, headers: headers);
       Map<String, dynamic> data = json.decode(response.body);
-      var mealPlan = MealPlan.fromMap(data);
+      MealPlan mealPlan = MealPlan.fromJson(data);
       return mealPlan;
     } catch (err) {
-      rethrow;
+      throw err.toString();
     }
   }
 
+  // Recipe Info
   Future<Recipe> fetchRecipe(String id) async {
-    var parameters = <String, String>{
+    Map<String, String> parameters = {
       'includeNutrition': 'false',
-      'apiKey': apiKey,
+      'apiKey': apiKey2,
     };
-    var uri = Uri.https(
+    Uri uri = Uri.https(
       _baseUrl,
       '/recipes/$id/information',
       parameters,
     );
-    var headers = <String, String>{
+    Map<String, String> headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
     };
 
     try {
       var response = await http.get(uri, headers: headers);
       Map<String, dynamic> data = json.decode(response.body);
-      var recipe = Recipe.fromMap(data);
+      Recipe recipe = Recipe.fromJson(data);
       return recipe;
     } catch (err) {
-        rethrow;
+      throw err.toString();
     }
   }
 }

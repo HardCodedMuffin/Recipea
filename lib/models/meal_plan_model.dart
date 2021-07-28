@@ -1,29 +1,41 @@
-import 'package:recipea/models/meal_model.dart';
+// To parse this JSON data, do
+//
+//     final mealPlan = mealPlanFromJson(jsonString);
+
+import 'dart:convert';
+
+import 'meal_model.dart';
+import 'nutrients_model.dart';
+
+MealPlan mealPlanFromJson(String str) => MealPlan.fromJson(json.decode(str));
+
+String mealPlanToJson(MealPlan data) => json.encode(data.toJson());
 
 class MealPlan {
-  factory MealPlan.fromMap(Map<String, dynamic> json) {
-    var meals = <Meal>[];
-    json['meals'].forEach((mealMap) => meals.add(Meal.fromMap(mealMap)));
-    return MealPlan(
-      meals: meals,
-      calories: json['nutrients']['calories'],
-      carbs: json['nutrients']['carbohydrates'],
-      fat: json['nutrients']['fat'],
-      protein: json['nutrients']['protein'],
-    );
-  }
-
   MealPlan({
     this.meals,
-    this.calories,
-    this.carbs,
-    this.fat,
-    this.protein,
+    this.nutrients,
   });
 
-  final List<Meal>? meals;
-  final double? calories;
-  final double? carbs;
-  final double? fat;
-  final double? protein;
+  List<Meal>? meals;
+  Nutrients? nutrients;
+
+  MealPlan copyWith({
+    List<Meal>? meals,
+    Nutrients? nutrients,
+  }) =>
+      MealPlan(
+        meals: meals ?? this.meals,
+        nutrients: nutrients ?? this.nutrients,
+      );
+
+  factory MealPlan.fromJson(Map<String, dynamic> json) => MealPlan(
+        meals: List<Meal>.from(json["meals"].map((x) => Meal.fromJson(x))),
+        nutrients: Nutrients.fromJson(json["nutrients"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "meals": List<dynamic>.from(meals!.map((x) => x.toJson())),
+        "nutrients": nutrients!.toJson(),
+      };
 }

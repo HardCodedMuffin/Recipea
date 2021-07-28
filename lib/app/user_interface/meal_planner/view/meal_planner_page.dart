@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recipea/models/models.dart';
 import 'package:recipea/services/spooncular_api.dart';
 
 import 'meal_list_page.dart';
@@ -25,7 +26,7 @@ class _MealPlannerPageState extends State<MealPlannerPage> {
   ];
 
   double _targetCalories = 2250;
-  String _diet = 'None';
+  String? _diet = 'None';
 
   void _searchMealPlan() async {
     var mealPlan = await APIService.instance.generateMealPlan(
@@ -35,7 +36,7 @@ class _MealPlannerPageState extends State<MealPlannerPage> {
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => MealList(mealPlan: mealPlan),
+        builder: (_) => MealListPage(mealPlan: mealPlan),
       ),
     );
   }
@@ -57,7 +58,7 @@ class _MealPlannerPageState extends State<MealPlannerPage> {
             margin: const EdgeInsets.symmetric(
               horizontal: 30.0,
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+            padding: EdgeInsets.symmetric(horizontal: 30.0),
             height: MediaQuery.of(context).size.height * 0.55,
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.9),
@@ -133,9 +134,9 @@ class _MealPlannerPageState extends State<MealPlannerPage> {
                       labelText: 'Diet',
                       labelStyle: TextStyle(fontSize: 18.0),
                     ),
-                    onChanged: (String? value) {
+                    onChanged: (dynamic value) {
                       setState(() {
-                        _diet = value!;
+                        _diet = value;
                       });
                     },
                     value: _diet,

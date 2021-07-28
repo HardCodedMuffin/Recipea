@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:recipea/models/meal_model.dart';
-import 'package:recipea/models/meal_plan_model.dart';
+import 'package:recipea/models/models.dart';
 import 'package:recipea/services/spooncular_api.dart';
 
 import 'recipe_details_page.dart';
 
-class MealList extends StatefulWidget {
-
-  const MealList({Key? key, required this.mealPlan}) : super (key: key);
-
-  final MealPlan mealPlan;
+class MealListPage extends StatefulWidget {
+  const MealListPage({Key? key, this.mealPlan}) : super(key: key);
+  final MealPlan? mealPlan;
 
   @override
-  _MealListState createState() => _MealListState();
+  _MealListPageState createState() => _MealListPageState();
 }
 
-class _MealListState extends State<MealList> {
+class _MealListPageState extends State<MealListPage> {
   Container _buildTotalNutrientsCard() {
     return Container(
       height: 140.0,
@@ -28,7 +25,7 @@ class _MealListState extends State<MealList> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(15.0),
         boxShadow: const [
-           BoxShadow(
+          BoxShadow(
             color: Colors.black12,
             offset: Offset(0, 2),
             blurRadius: 6.0,
@@ -41,7 +38,7 @@ class _MealListState extends State<MealList> {
           const Text(
             'Total Nutrients',
             style: TextStyle(
-              fontSize: 24.0,
+              fontSize: 20.0,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -50,16 +47,17 @@ class _MealListState extends State<MealList> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                'Calories: ${widget.mealPlan.calories.toString()} cal',
+                'Calories: '
+                '${widget.mealPlan!.nutrients!.calories.toString()} cal',
                 style: const TextStyle(
-                  fontSize: 20.0,
+                  fontSize: 18.0,
                   fontWeight: FontWeight.w600,
                 ),
               ),
               Text(
-                'Protein: ${widget.mealPlan.protein.toString()} g',
+                'Protein: ${widget.mealPlan!.nutrients!.protein.toString()} g',
                 style: const TextStyle(
-                  fontSize: 20.0,
+                  fontSize: 18.0,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -70,16 +68,17 @@ class _MealListState extends State<MealList> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                'Fat: ${widget.mealPlan.fat.toString()} g',
+                'Fat: ${widget.mealPlan!.nutrients!.fat.toString()} g',
                 style: const TextStyle(
-                  fontSize: 20.0,
+                  fontSize: 18.0,
                   fontWeight: FontWeight.w600,
                 ),
               ),
               Text(
-                'Carbs: ${widget.mealPlan.carbs.toString()} g',
+                'Carbs: '
+                '${widget.mealPlan!.nutrients!.carbohydrates.toString()} g',
                 style: const TextStyle(
-                  fontSize: 20.0,
+                  fontSize: 18.0,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -95,11 +94,11 @@ class _MealListState extends State<MealList> {
     return GestureDetector(
       onTap: () async {
         var recipe =
-        await APIService.instance.fetchRecipe(meal.id.toString());
+            await APIService.instance.fetchRecipe(meal.id.toString());
         await Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => RecipeDetails(
+            builder: (_) => RecipePage(
               mealType: mealType,
               recipe: recipe,
             ),
@@ -123,7 +122,8 @@ class _MealListState extends State<MealList> {
             decoration: BoxDecoration(
               color: Colors.white,
               image: DecorationImage(
-                image: NetworkImage(meal.imageUrl!),
+                image: NetworkImage(
+                    'https://spoonacular.com/recipeImages/${meal.id}-636x393.${meal.imageType}'),
                 fit: BoxFit.cover,
               ),
               borderRadius: BorderRadius.circular(15.0),
@@ -145,18 +145,20 @@ class _MealListState extends State<MealList> {
                 Text(
                   mealType,
                   style: const TextStyle(
-                    fontSize: 30.0,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.5,
                   ),
                 ),
+                const SizedBox(height: 10),
                 Text(
-                  meal.title!,
+                  meal.title,
                   style: const TextStyle(
-                    fontSize: 24.0,
+                    fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
-                  overflow: TextOverflow.ellipsis,
+                  overflow: TextOverflow.visible,
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
@@ -186,12 +188,12 @@ class _MealListState extends State<MealList> {
         title: const Text('Your Meal Plan'),
       ),
       body: ListView.builder(
-        itemCount: 1 + widget.mealPlan.meals!.length,
+        itemCount: 1 + widget.mealPlan!.meals!.length,
         itemBuilder: (BuildContext context, int index) {
           if (index == 0) {
             return _buildTotalNutrientsCard();
           }
-          var meal = widget.mealPlan.meals![index - 1];
+          var meal = widget.mealPlan!.meals![index - 1];
           return _buildMealCard(meal, index - 1);
         },
       ),
