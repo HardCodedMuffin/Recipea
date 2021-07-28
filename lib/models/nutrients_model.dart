@@ -1,40 +1,40 @@
 class Nutrients {
   Nutrients({
     this.calories,
-    this.carbohydrates,
-    this.fat,
     this.protein,
+    this.fat,
+    this.carbohydrates,
   });
 
   double? calories;
-  double? carbohydrates;
-  double? fat;
   double? protein;
+  double? fat;
+  double? carbohydrates;
 
   Nutrients copyWith({
     double? calories,
-    double? carbohydrates,
-    double? fat,
     double? protein,
+    double? fat,
+    double? carbohydrates,
   }) =>
       Nutrients(
         calories: calories ?? this.calories,
-        carbohydrates: carbohydrates ?? this.carbohydrates,
-        fat: fat ?? this.fat,
         protein: protein ?? this.protein,
+        fat: fat ?? this.fat,
+        carbohydrates: carbohydrates ?? this.carbohydrates,
       );
 
   factory Nutrients.fromJson(Map<String, dynamic> json) => Nutrients(
         calories: json["calories"].toDouble(),
-        carbohydrates: json["carbohydrates"].toDouble(),
-        fat: json["fat"].toDouble(),
         protein: json["protein"].toDouble(),
+        fat: json["fat"].toDouble(),
+        carbohydrates: json["carbohydrates"].toDouble(),
       );
 
   Map<String, dynamic> toJson() => {
         "calories": calories,
-        "carbohydrates": carbohydrates,
-        "fat": fat,
         "protein": protein,
+        "fat": fat,
+        "carbohydrates": carbohydrates,
       };
 }
