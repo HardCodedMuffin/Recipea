@@ -51,8 +51,8 @@ class Recipe {
   String? gaps;
   bool? lowFodmap;
   int? aggregateLikes;
-  int? spoonacularScore;
-  int? healthScore;
+  double? spoonacularScore;
+  double? healthScore;
   String? creditsText;
   String? license;
   String? sourceName;
@@ -90,8 +90,8 @@ class Recipe {
     String? gaps,
     bool? lowFodmap,
     int? aggregateLikes,
-    int? spoonacularScore,
-    int? healthScore,
+    double? spoonacularScore,
+    double? healthScore,
     String? creditsText,
     String? license,
     String? sourceName,

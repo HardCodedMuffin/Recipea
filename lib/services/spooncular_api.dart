@@ -20,7 +20,7 @@ class APIService {
       'timeFrame': 'day',
       'targetCalories': targetCalories.toString(),
       'diet': diet,
-      'apiKey': apiKey3,
+      'apiKey': apiKey2,
     };
     Uri uri = Uri.https(
       _baseUrl,
@@ -45,7 +45,7 @@ class APIService {
   Future<Recipe> fetchRecipe(String id) async {
     Map<String, String> parameters = {
       'includeNutrition': 'true',
-      'apiKey': apiKey3,
+      'apiKey': apiKey2,
     };
     Uri uri = Uri.https(
       _baseUrl,
@@ -70,7 +70,7 @@ class APIService {
   Future<RecipeSource> fetchRecipeSource(String id) async {
     Map<String, String> parameters = {
       'includeNutrition': 'false',
-      'apiKey': apiKey3,
+      'apiKey': apiKey2,
     };
     Uri uri = Uri.https(
       _baseUrl,
@@ -95,7 +95,7 @@ class APIService {
     Map<String, String> parameters = {
       'limitLicense': 'true',
       'number': count.toString(),
-      'apiKey': apiKey3,
+      'apiKey': apiKey2,
     };
     Uri uri = Uri.https(
       _baseUrl,
