@@ -1,3 +1,4 @@
+export 'instructions_model.dart';
 export 'meal_model.dart';
 export 'meal_plan_model.dart';
 export 'nutrients_model.dart';

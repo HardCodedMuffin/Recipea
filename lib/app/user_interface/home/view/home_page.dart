@@ -113,22 +113,24 @@ class _HomePageState extends State<HomePage> {
                   )),
                 ],
               ),
-              Expanded(
+              const Expanded(
                 child: TabBarView(
                   children: [
-                    GridView.count(
-                      padding: EdgeInsets.zero,
-                      crossAxisCount: 3,
-                      children: Colors.primaries.map((color) {
-                        return Container(color: color, height: 150.0);
-                      }).toList(),
-                    ),
-                    ListView(
-                      padding: EdgeInsets.zero,
-                      children: Colors.primaries.map((color) {
-                        return Container(color: color, height: 150.0);
-                      }).toList(),
-                    )
+                    // GridView.count(
+                    //   padding: EdgeInsets.zero,
+                    //   crossAxisCount: 3,
+                    //   children: Colors.primaries.map((color) {
+                    //     return Container(color: color, height: 150.0);
+                    //   }).toList(),
+                    // ),
+                    // ListView(
+                    //   padding: EdgeInsets.zero,
+                    //   children: Colors.primaries.map((color) {
+                    //     return Container(color: color, height: 150.0);
+                    //   }).toList(),
+                    // )
+                    RecipeFeed(),
+                    RecipeFeed(),
                   ],
                 ),
               ),

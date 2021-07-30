@@ -32,24 +32,21 @@ class _RecipeFeedState extends State<RecipeFeed> {
   Widget build(BuildContext context) {
     return Center(
       child: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-              color: Theme.of(context).highlightColor,
-            ))
+          ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
-              itemCount: _recipeList.recipes!.length,
-              itemBuilder: (context, index) {
-                return CustomCard(
-                    id: _recipeList.recipes![index].id!,
-                    title: _recipeList.recipes![index].title!,
-                    author: _recipeList.recipes![index].sourceName!,
-                    cookTime:
-                        _recipeList.recipes![index].readyInMinutes.toString(),
-                    rating:
-                        _recipeList.recipes![index].spoonacularScore.toString(),
-                    thumbnailUrl: _recipeList.recipes![index].image!);
-              },
-            ),
+        itemCount: _recipeList.recipes!.length,
+        itemBuilder: (context, index) {
+          return CustomCard(
+              id: _recipeList.recipes![index].id!,
+              title: _recipeList.recipes![index].title!,
+              cookTime:
+              _recipeList.recipes![index].readyInMinutes.toString(),
+              rating:
+              _recipeList.recipes![index].spoonacularScore.toString(),
+              thumbnailUrl: _recipeList.recipes![index].image!);
+        },
+      ),
     );
   }
 }
+

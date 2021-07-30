@@ -7,7 +7,6 @@ class CustomCard extends StatelessWidget {
     Key? key,
     required this.id,
     required this.title,
-    required this.author,
     required this.cookTime,
     required this.rating,
     required this.thumbnailUrl,
@@ -15,7 +14,6 @@ class CustomCard extends StatelessWidget {
 
   final int id;
   final String title;
-  final String author;
   final String rating;
   final String cookTime;
   final String thumbnailUrl;
@@ -32,6 +30,7 @@ class CustomCard extends StatelessWidget {
           MaterialPageRoute(
             builder: (_) => RecipeManager(
               recipe: recipe,
+              // analyzedInstructions: instructions,
             ),
           ),
         );
@@ -70,34 +69,13 @@ class CustomCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(5),
-                    margin: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.6),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        const SizedBox(width: 7),
-                        Text(
-                          author,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
+                  IconButton(
+                    icon: const Icon(Icons.bookmark),
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    onPressed: () {},
+                    iconSize: 18.0,
                   ),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.bookmark),
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        onPressed: () {},
-                        iconSize: 18.0,
-                      ),
-                      const SizedBox(width: 7),
-                    ],
-                  ),
+                  const SizedBox(width: 7),
                 ],
               ),
             ),

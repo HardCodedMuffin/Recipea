@@ -27,9 +27,9 @@ dependencies:
   meta: any
   very_good_analysis: ^2.2.0
   http: ^0.13.3
+  html: ^0.15.0
   webview_flutter: ^2.0.10
   url_launcher: ^6.0.9
-  dio: ^4.0.0
 
 dev_dependencies:
   flutter_test:

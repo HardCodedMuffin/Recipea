@@ -2,9 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:recipea/app/utilities/keys/spooncular_api.dart';
 import 'package:recipea/models/models.dart';
-
-import '../app/utilities/keys/spooncular_api.dart';
 
 class APIService {
   APIService._instantiate();
@@ -16,103 +15,129 @@ class APIService {
   // Generate Meal Plan
   Future<MealPlan> generateMealPlan({int? targetCalories, String? diet}) async {
     if (diet == 'None') diet = '';
-    Map<String, String?> parameters = {
+    var parameters = <String, String?>{
       'timeFrame': 'day',
       'targetCalories': targetCalories.toString(),
       'diet': diet,
-      'apiKey': apiKey2,
+      'apiKey': apiKey,
     };
-    Uri uri = Uri.https(
+    var uri = Uri.https(
       _baseUrl,
       '/recipes/mealplans/generate',
       parameters,
     );
-    Map<String, String> headers = {
+    var headers = <String, String>{
       HttpHeaders.contentTypeHeader: 'application/json',
     };
 
     try {
       var response = await http.get(uri, headers: headers);
       Map<String, dynamic> data = json.decode(response.body);
-      MealPlan mealPlan = MealPlan.fromJson(data);
+      var mealPlan = MealPlan.fromJson(data);
       return mealPlan;
     } catch (err) {
-      throw err.toString();
+      rethrow;
     }
   }
 
   // Recipe Info
   Future<Recipe> fetchRecipe(String id) async {
-    Map<String, String> parameters = {
-      'includeNutrition': 'true',
-      'apiKey': apiKey2,
+    var parameters = <String, String>{
+      'includeNutrition': 'false',
+      'apiKey': apiKey,
     };
-    Uri uri = Uri.https(
+    var uri = Uri.https(
       _baseUrl,
       '/recipes/$id/information',
       parameters,
     );
-    Map<String, String> headers = {
+    var headers = <String, String>{
       HttpHeaders.contentTypeHeader: 'application/json',
     };
 
     try {
       var response = await http.get(uri, headers: headers);
       Map<String, dynamic> data = json.decode(response.body);
-      Recipe recipe = Recipe.fromJson(data);
+      var recipe = Recipe.fromJson(data);
       return recipe;
     } catch (err) {
-      throw err.toString();
+      rethrow;
     }
   }
 
-  // Recipe Info
+  // Recipe Source
   Future<RecipeSource> fetchRecipeSource(String id) async {
-    Map<String, String> parameters = {
+    var parameters = <String, String>{
       'includeNutrition': 'false',
-      'apiKey': apiKey2,
+      'apiKey': apiKey,
     };
-    Uri uri = Uri.https(
+    var uri = Uri.https(
       _baseUrl,
       '/recipes/$id/information',
       parameters,
     );
-    Map<String, String> headers = {
+    var headers = <String, String>{
       HttpHeaders.contentTypeHeader: 'application/json',
     };
 
     try {
       var response = await http.get(uri, headers: headers);
       Map<String, dynamic> data = json.decode(response.body);
-      RecipeSource recipeSource = RecipeSource.fromJson(data);
+      var recipeSource = RecipeSource.fromJson(data);
       return recipeSource;
     } catch (err) {
-      throw err.toString();
+      rethrow;
     }
   }
 
   Future<RecipeList> fetchRecipes(int count) async {
-    Map<String, String> parameters = {
+    var parameters = <String, String>{
       'limitLicense': 'true',
       'number': count.toString(),
-      'apiKey': apiKey2,
+      'apiKey': apiKey,
     };
-    Uri uri = Uri.https(
+    var uri = Uri.https(
       _baseUrl,
       '/recipes/random',
       parameters,
     );
-    Map<String, String> headers = {
+    var headers = <String, String>{
       HttpHeaders.contentTypeHeader: 'application/json',
     };
 
     try {
       var response = await http.get(uri, headers: headers);
       Map<String, dynamic> data = json.decode(response.body);
-      RecipeList recipes = RecipeList.fromJson(data);
+      var recipes = RecipeList.fromJson(data);
       return recipes;
     } catch (err) {
-      throw err.toString();
+      rethrow;
     }
+  }
+
+  // Recipe Instructions
+  Future<AnalyzedInstructions> fetchRecipeInstructions(String id) async {
+    var parameters = <String, String>{
+      'apiKey': apiKey,
+    };
+    var uri = Uri.https(
+      _baseUrl,
+      '/recipes/$id/analyzedInstructions',
+      parameters,
+    );
+    var headers = <String, String>{
+      HttpHeaders.contentTypeHeader: 'application/json',
+    };
+
+    try {
+      var response = await http.get(uri, headers: headers);
+      Map<String, dynamic> data = json.decode(response.body);
+      var instructions = AnalyzedInstructions.fromJson(data);
+      return instructions;
+    } catch (err) {
+      rethrow;
+
+    }
+
   }
 }
