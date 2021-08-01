@@ -3,14 +3,14 @@ import 'package:recipea/app/app.dart';
 import 'package:recipea/models/models.dart';
 import 'package:recipea/services/spooncular_api.dart';
 
-class SearchPage extends StatefulWidget {
-  const SearchPage({Key? key}) : super(key: key);
+class RecipeFeed extends StatefulWidget {
+  const RecipeFeed({Key? key}) : super(key: key);
 
   @override
-  _SearchPageState createState() => _SearchPageState();
+  _RecipeFeedState createState() => _RecipeFeedState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class _RecipeFeedState extends State<RecipeFeed> {
   late RecipeList _recipeList;
   bool _isLoading = true;
   late final int _count = 10;
@@ -30,21 +30,8 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Get Inspired'),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.add),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.bookmark_add_outlined),
-          ),
-        ],
-      ),
-      body: _isLoading
+    return Center(
+      child: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
         itemCount: _recipeList.recipes!.length,

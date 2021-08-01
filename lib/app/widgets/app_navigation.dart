@@ -68,7 +68,7 @@ class AppNavigationState extends State<AppNavigation> {
         height: 60.0,
         items: const <Widget>[
           Icon(Icons.home_outlined, size: 30),
-          Icon(Icons.search_outlined, size: 30),
+          ImageIcon(AssetImage('assets/icons/chef.png'), size: 30),
           Icon(Icons.add, size: 30),
           Icon(Icons.restaurant_menu_outlined, size: 30),
           Icon(Icons.perm_identity, size: 30),

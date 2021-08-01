@@ -57,7 +57,7 @@ class _MealPlannerPageState extends State<MealPlannerPage> {
             margin: const EdgeInsets.symmetric(
               horizontal: 30.0,
             ),
-            padding: EdgeInsets.symmetric(horizontal: 30.0),
+            padding: const EdgeInsets.symmetric(horizontal: 30.0),
             height: MediaQuery.of(context).size.height * 0.50,
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.9),

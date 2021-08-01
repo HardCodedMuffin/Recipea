@@ -3,18 +3,36 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:html/parser.dart';
+import 'package:recipea/models/instructions_model.dart';
 import 'package:recipea/models/recipe_model.dart';
 
 class RecipeManager extends StatefulWidget {
-  const RecipeManager({Key? key, required this.recipe}) : super(key: key);
+  const RecipeManager(
+      {Key? key, required this.recipe, this.analyzedInstructions})
+      : super(key: key);
 
   final Recipe recipe;
+  final AnalyzedInstructions? analyzedInstructions;
 
   @override
   _RecipeManagerState createState() => _RecipeManagerState();
 }
 
 class _RecipeManagerState extends State<RecipeManager> {
+  RegExp re = RegExp(r'[^\.!\?]+[\.!\?]');
+  String? parsedSummary;
+  String? parsedInstructions;
+  List<String>? steps;
+
+  @override
+  void initState() {
+    super.initState();
+    parsedSummary = _parseHtmlString(widget.recipe.summary!);
+    parsedInstructions = _parseHtmlString(widget.recipe.instructions!);
+    steps = _iterateSteps(parsedInstructions!);
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -25,6 +43,7 @@ class _RecipeManagerState extends State<RecipeManager> {
         height: double.infinity,
         child: Stack(
           children: <Widget>[
+            // Recipe Image
             Hero(
               tag: NetworkImage(widget.recipe.image!),
               child: SizedBox(
@@ -35,6 +54,7 @@ class _RecipeManagerState extends State<RecipeManager> {
                 ),
               ),
             ),
+            // Previous Page Button
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20.0),
               child: Container(
@@ -66,6 +86,7 @@ class _RecipeManagerState extends State<RecipeManager> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
+                        // Title
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
@@ -85,6 +106,7 @@ class _RecipeManagerState extends State<RecipeManager> {
                             )
                           ],
                         ),
+                        // Subtitle
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -100,7 +122,7 @@ class _RecipeManagerState extends State<RecipeManager> {
                             ),
                             Padding(
                               padding:
-                              const EdgeInsets.symmetric(vertical: 8.0),
+                                  const EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
                                 'Health Score',
                                 style: GoogleFonts.roboto(
@@ -110,6 +132,7 @@ class _RecipeManagerState extends State<RecipeManager> {
                             ),
                           ],
                         ),
+                        // Rating
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
@@ -135,12 +158,10 @@ class _RecipeManagerState extends State<RecipeManager> {
                             ),
                           ],
                         ),
-
                         const SizedBox(
-                          height: 24,
+                          height: 30,
                         ),
-
-                        ///Container for food information
+                        // Container for food information
                         Row(
                           children: <Widget>[
                             Expanded(
@@ -226,46 +247,52 @@ class _RecipeManagerState extends State<RecipeManager> {
                             ),
                           ],
                         ),
-
                         const SizedBox(
-                          height: 24,
+                          height: 30,
                         ),
-
+                        // About Recipe
                         Text(
                           'About Recipe',
                           style: GoogleFonts.roboto(
                               fontSize: 20, fontWeight: FontWeight.bold),
                         ),
-
                         const SizedBox(
-                          height: 4,
+                          height: 10,
                         ),
-
+                        // Summary
                         Text(
-                        widget.recipe.instructions!,
+                          parsedSummary!,
                           style: GoogleFonts.roboto(
                               fontWeight: FontWeight.w300, color: Colors.grey),
                         ),
-
                         const SizedBox(
-                          height: 24,
+                          height: 30,
                         ),
-
                         Text(
-                          'Cooking Method',
+                          'Ingredients',
                           style: GoogleFonts.roboto(
                               fontSize: 20, fontWeight: FontWeight.bold),
                         ),
-
                         const SizedBox(
-                          height: 4,
+                          height: 10,
                         ),
-
+                        _ingredients(context),
+                        const SizedBox(
+                          height: 30,
+                        ),
                         Text(
-                          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam gravida mauris ut semper posuere. Fusce volutpat neque non elementum rutrum. Phasellus et lacus et lacus accumsan commodo ac quis felis. Proin quam lorem, pellentesque in pretium ac, convallis et massa. Donec in nisi magna. In rutrum, nibh id interdum auctor, nisl elit ultricies arcu, ut ullamcorper ipsum mauris quis eros. Aenean ex tortor, pretium eu vulputate a, consectetur vel diam. Cras nulla nisl, euismod eu purus ac, sagittis viverra elit. Duis pulvinar sem quis fermentum iaculis. Quisque pharetra turpis velit, ut hendrerit tortor finibus id. Sed eu pretium libero.Vestibulum semper justo eu purus suscipit scelerisque. Proin eget rhoncus ex. Nam eget egestas nisi. Morbi molestie imperdiet sapien, ut ornare est laoreet in. Nam fermentum venenatis lorem, et scelerisque ante fermentum eget. Vestibulum eget urna ullamcorper, consequat odio et, efficitur arcu. Ut molestie feugiat tristique. Ut lectus erat, malesuada eget elit et, laoreet commodo augue. Nullam at velit vel ipsum tristique rhoncus. Fusce euismod facilisis lorem nec consequat. Donec in turpis tellus. Nunc at massa et sapien hendrerit volutpat. Curabitur condimentum, nibh hendrerit fermentum suscipit, justo lacus pellentesque felis, vitae rhoncus mi est sit amet massa. Donec id hendrerit felis, at blandit ex. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                          'Steps',
                           style: GoogleFonts.roboto(
-                              fontWeight: FontWeight.w300, color: Colors.grey),
+                              fontSize: 20, fontWeight: FontWeight.bold),
                         ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        _steps(context),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        // Steps
                       ],
                     ),
                   ),
@@ -274,6 +301,101 @@ class _RecipeManagerState extends State<RecipeManager> {
             )
           ],
         ),
+      ),
+    );
+  }
+
+  String _parseHtmlString(String htmlString) {
+    final document = parse(htmlString);
+    final parsedString = parse(document.body!.text).documentElement!.text;
+
+    return parsedString;
+  }
+
+  List<String>? _iterateSteps(String str) {
+    var _str = _parseHtmlString(str);
+    var steps = <String>[];
+
+    Iterable matches = re.allMatches(_str);
+
+    for (Match m in matches) {
+      var match = m.group(0);
+      steps.add(match!);
+    }
+    return steps;
+  }
+
+  Widget _steps(BuildContext context) {
+    var scrollController = ScrollController();
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.5,
+      child: ListView.builder(
+        controller: scrollController,
+        scrollDirection: Axis.vertical,
+        itemCount: steps!.length,
+        itemBuilder: (context, index) {
+          return Align(
+            alignment: Alignment.topLeft,
+            child: ListTile(
+              leading: Container(
+                decoration: const BoxDecoration(
+                    color: Colors.white30, shape: BoxShape.circle),
+                child: Text('${index + 1}',
+                    style: TextStyle(color: Theme.of(context).primaryColor)),
+              ),
+              title: Text(
+                steps![index],
+                textAlign: TextAlign.justify,
+                style: GoogleFonts.roboto(
+                    fontWeight: FontWeight.w300, color: Colors.grey),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _ingredients(BuildContext context) {
+    var scrollController = ScrollController();
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.5,
+      child: ListView.builder(
+        controller: scrollController,
+        scrollDirection: Axis.vertical,
+        itemCount: widget.recipe.extendedIngredients!.length,
+        itemBuilder: (context, index) {
+          return Align(
+            alignment: Alignment.topLeft,
+            child: ListTile(
+              onTap: () {},
+              leading: const Icon(Icons.circle),
+              title: RichText(
+                text: TextSpan(
+                  style: DefaultTextStyle.of(context).style,
+                  children: <TextSpan>[
+                    TextSpan(
+                        text:
+                            '${double.parse((widget.recipe
+                                .extendedIngredients![index]
+                                .amount)!.toStringAsFixed(2))} '
+                                '${widget.recipe
+                                .extendedIngredients![index].unit}',
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColorDark,
+                            fontWeight: FontWeight.bold)),
+                    TextSpan(
+                        text:
+                            ' ${widget.recipe
+                                .extendedIngredients![index].name} ',
+                        style: const TextStyle(
+                            color: Colors.grey, fontWeight: FontWeight.w300)),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
