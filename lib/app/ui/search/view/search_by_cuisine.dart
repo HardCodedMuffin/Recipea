@@ -47,14 +47,14 @@ class _SearchByCuisineState extends State<SearchByCuisine> {
   Widget _buildCuisineCards(BuildContext context, String imgSrc, String title) {
     return InkWell(
       onTap: () async {
-        await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => SearchPage(
-              cuisine: title, count: 10,
-            ),
-          ),
-        );
+        // await Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (_) => SearchPage(
+        //       cuisine: title, count: 10,
+        //     ),
+        //   ),
+        // );
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),

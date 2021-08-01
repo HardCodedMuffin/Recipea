@@ -36,7 +36,7 @@ class _RecipeFeedState extends State<RecipeFeed> {
           : ListView.builder(
         itemCount: _recipeList.result!.length,
         itemBuilder: (context, index) {
-          return CustomCard(
+          return RecipeCard(
               id: _recipeList.result![index].id!,
               title: _recipeList.result![index].title!,
               cookTime:

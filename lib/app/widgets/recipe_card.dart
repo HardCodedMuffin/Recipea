@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:recipea_app/app/ui/recipe_manager/recipe_manager.dart';
 import 'package:recipea_app/services/spooncular_api.dart';
 
-class CustomCard extends StatelessWidget {
-  const CustomCard({
+class RecipeCard extends StatelessWidget {
+  const RecipeCard({
     Key? key,
     required this.id,
     required this.title,

@@ -34,7 +34,7 @@ class AppNavigationState extends State<AppNavigation> {
     GlobalKey(),
   ];
 
- late PageController _pageController;
+  late PageController _pageController;
   int _page = 0;
 
   @override
@@ -57,7 +57,7 @@ class AppNavigationState extends State<AppNavigation> {
         children: <Widget>[
           HomePage(key: _pageKeys[0]),
           SearchByCuisine(key: _pageKeys[1]),
-          SearchPage(key: _pageKeys[2], count: null),
+          SearchByCuisine(key: _pageKeys[2]),
           MealPlannerPage(key: _pageKeys[3]),
           ProfilePage(key: _pageKeys[4])
         ],
