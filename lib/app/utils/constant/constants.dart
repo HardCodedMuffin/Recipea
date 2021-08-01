@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 final List<String> mealTypes = [
   'Appetizer',
   'Beverage',
@@ -70,6 +72,23 @@ final List<String> diets = [
   'Paleo',
   'Primal',
   'Whole30',
+];
+
+final icons = const [
+  (AssetImage('assets/icons/appetizer.png')),
+  (AssetImage('assets/icons/beverage.png')),
+  (AssetImage('assets/icons/bread.png')),
+  (AssetImage('assets/icons/breakfast.png')),
+  (AssetImage('assets/icons/dessert.png')),
+  (AssetImage('assets/icons/drink.png')),
+  (AssetImage('assets/icons/finger_food.png')),
+  (AssetImage('assets/icons/main_course.png')),
+  (AssetImage('assets/icons/marinade.png')),
+  (AssetImage('assets/icons/salad.png')),
+  (AssetImage('assets/icons/sauce.png')),
+  (AssetImage('assets/icons/side_dish.png')),
+  (AssetImage('assets/icons/snack.png')),
+  (AssetImage('assets/icons/soup.png')),
 ];
 
 const String banner =

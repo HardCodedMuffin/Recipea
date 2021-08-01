@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recipea_app/app/app.dart';
 import 'package:recipea_app/app/utils/config/theme.dart';
+import 'package:recipea_app/app/widgets/dismiss_keyboard.dart';
 
 class App extends StatelessWidget {
   const App({
@@ -33,12 +34,14 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: theme,
-      home: FlowBuilder<AppStatus>(
-        state: context.select((AppBloc bloc) => bloc.state.status),
-        onGeneratePages: onGenerateAppViewPages,
+    return DismissKeyboard(
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: theme,
+        home: FlowBuilder<AppStatus>(
+          state: context.select((AppBloc bloc) => bloc.state.status),
+          onGeneratePages: onGenerateAppViewPages,
+        ),
       ),
     );
   }

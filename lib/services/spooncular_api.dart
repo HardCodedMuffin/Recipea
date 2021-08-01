@@ -19,7 +19,7 @@ class APIService {
       'timeFrame': 'day',
       'targetCalories': targetCalories.toString(),
       'diet': diet,
-      'apiKey': apiKey3,
+      'apiKey': apiKey,
     };
     Uri uri = Uri.https(
       _baseUrl,
@@ -45,7 +45,7 @@ class APIService {
   Future<Recipe> fetchRecipe(String id) async {
     Map<String, String> parameters = {
       'includeNutrition': 'false',
-      'apiKey': apiKey3,
+      'apiKey': apiKey,
     };
     Uri uri = Uri.https(
       _baseUrl,
@@ -69,7 +69,7 @@ class APIService {
   // Recipe Nutrients Info
   Future<Nutrients> fetchNutrients(String id) async {
     Map<String, String> parameters = {
-      'apiKey': apiKey3,
+      'apiKey': apiKey,
     };
     Uri uri = Uri.https(
       _baseUrl,
@@ -94,7 +94,7 @@ class APIService {
   Future<RecipeSource> fetchRecipeSource(String id) async {
     Map<String, String> parameters = {
       'includeNutrition': 'false',
-      'apiKey': apiKey3,
+      'apiKey': apiKey,
     };
     Uri uri = Uri.https(
       _baseUrl,
@@ -120,7 +120,7 @@ class APIService {
     Map<String, String> parameters = {
       'limitLicense': 'true',
       'number': count.toString(),
-      'apiKey': apiKey3,
+      'apiKey': apiKey,
     };
     Uri uri = Uri.https(
       _baseUrl,
@@ -148,7 +148,7 @@ class APIService {
       'sort': 'popularity',
       'sortDirection': 'desc',
       'number': count.toString(),
-      'apiKey': apiKey3,
+      'apiKey': apiKey,
     };
     Uri uri = Uri.https(
       _baseUrl,
@@ -180,7 +180,7 @@ class APIService {
       'intolerances': intolerances == null ? ' ' : intolerances,
       'type': mealType == null ? ' ' : mealType,
       'number': number.toString(),
-      'apiKey': apiKey3,
+      'apiKey': apiKey,
     };
     Uri uri = Uri.https(
       _baseUrl,

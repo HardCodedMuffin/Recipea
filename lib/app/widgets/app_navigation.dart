@@ -57,7 +57,7 @@ class AppNavigationState extends State<AppNavigation> {
         children: <Widget>[
           HomePage(key: _pageKeys[0]),
           SearchByCuisine(key: _pageKeys[1]),
-          SearchByCuisine(key: _pageKeys[2]),
+          SearchPage(key: _pageKeys[2]),
           MealPlannerPage(key: _pageKeys[3]),
           ProfilePage(key: _pageKeys[4])
         ],
