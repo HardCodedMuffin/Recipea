@@ -20,7 +20,7 @@ class APIService {
       'timeFrame': 'day',
       'targetCalories': targetCalories.toString(),
       'diet': diet,
-      'apiKey': apiKey2,
+      'apiKey': apiKey3,
     };
     Uri uri = Uri.https(
       _baseUrl,
@@ -44,8 +44,8 @@ class APIService {
   // Recipe Info
   Future<Recipe> fetchRecipe(String id) async {
     Map<String, String> parameters = {
-      'includeNutrition': 'false',
-      'apiKey': apiKey2,
+      'includeNutrition': 'true',
+      'apiKey': apiKey3,
     };
     Uri uri = Uri.https(
       _baseUrl,
@@ -61,6 +61,56 @@ class APIService {
       Map<String, dynamic> data = json.decode(response.body);
       Recipe recipe = Recipe.fromJson(data);
       return recipe;
+    } catch (err) {
+      throw err.toString();
+    }
+  }
+
+  // Recipe Info
+  Future<RecipeSource> fetchRecipeSource(String id) async {
+    Map<String, String> parameters = {
+      'includeNutrition': 'false',
+      'apiKey': apiKey3,
+    };
+    Uri uri = Uri.https(
+      _baseUrl,
+      '/recipes/$id/information',
+      parameters,
+    );
+    Map<String, String> headers = {
+      HttpHeaders.contentTypeHeader: 'application/json',
+    };
+
+    try {
+      var response = await http.get(uri, headers: headers);
+      Map<String, dynamic> data = json.decode(response.body);
+      RecipeSource recipeSource = RecipeSource.fromJson(data);
+      return recipeSource;
+    } catch (err) {
+      throw err.toString();
+    }
+  }
+
+  Future<RecipeList> fetchRecipes(int count) async {
+    Map<String, String> parameters = {
+      'limitLicense': 'true',
+      'number': count.toString(),
+      'apiKey': apiKey3,
+    };
+    Uri uri = Uri.https(
+      _baseUrl,
+      '/recipes/random',
+      parameters,
+    );
+    Map<String, String> headers = {
+      HttpHeaders.contentTypeHeader: 'application/json',
+    };
+
+    try {
+      var response = await http.get(uri, headers: headers);
+      Map<String, dynamic> data = json.decode(response.body);
+      RecipeList recipes = RecipeList.fromJson(data);
+      return recipes;
     } catch (err) {
       throw err.toString();
     }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:recipea/models/models.dart';
 import 'package:recipea/services/spooncular_api.dart';
 
 import 'meal_list_page.dart';
@@ -28,7 +27,7 @@ class _MealPlannerPageState extends State<MealPlannerPage> {
   double _targetCalories = 2250;
   String? _diet = 'None';
 
-  void _searchMealPlan() async {
+  Future<void> _searchMealPlan() async {
     var mealPlan = await APIService.instance.generateMealPlan(
       targetCalories: _targetCalories.toInt(),
       diet: _diet,
@@ -59,7 +58,7 @@ class _MealPlannerPageState extends State<MealPlannerPage> {
               horizontal: 30.0,
             ),
             padding: EdgeInsets.symmetric(horizontal: 30.0),
-            height: MediaQuery.of(context).size.height * 0.55,
+            height: MediaQuery.of(context).size.height * 0.50,
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.9),
               borderRadius: BorderRadius.circular(15.0),
@@ -70,7 +69,7 @@ class _MealPlannerPageState extends State<MealPlannerPage> {
                 const Text(
                   'Daily Meal Planner',
                   style: TextStyle(
-                    fontSize: 32.0,
+                    fontSize: 26.0,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 2.0,
                   ),
@@ -143,22 +142,24 @@ class _MealPlannerPageState extends State<MealPlannerPage> {
                   ),
                 ),
                 const SizedBox(height: 30.0),
-                FlatButton(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 60.0,
-                    vertical: 8.0,
-                  ),
-                  color: Theme.of(context).primaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 60.0,
+                      vertical: 8.0,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    primary: Theme.of(context).primaryColor,
                   ),
                   onPressed: _searchMealPlan,
                   child: const Text(
                     'Search',
                     style: TextStyle(
-                      color: Colors.black,
+                      color: Colors.white,
                       fontSize: 22.0,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),

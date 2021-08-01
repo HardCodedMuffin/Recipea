@@ -93,14 +93,14 @@ class _MealListPageState extends State<MealListPage> {
     var mealType = _mealType(index);
     return GestureDetector(
       onTap: () async {
-        var recipe =
-            await APIService.instance.fetchRecipe(meal.id.toString());
+        var recipeSource =
+            await APIService.instance.fetchRecipeSource(meal.id.toString());
         await Navigator.push(
           context,
           MaterialPageRoute(
             builder: (_) => RecipePage(
               mealType: mealType,
-              recipe: recipe,
+              recipeSource: recipeSource,
             ),
           ),
         );
@@ -152,7 +152,7 @@ class _MealListPageState extends State<MealListPage> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  meal.title,
+                  meal.title!,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -185,6 +185,10 @@ class _MealListPageState extends State<MealListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_outlined, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: const Text('Your Meal Plan'),
       ),
       body: ListView.builder(
