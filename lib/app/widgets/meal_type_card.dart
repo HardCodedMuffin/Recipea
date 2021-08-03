@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recipea_app/app/ui/search/view/search_page.dart';
 import 'package:recipea_app/app/utils/constant/constants.dart';
 
 class MealTypeCard extends StatelessWidget {
@@ -13,20 +14,32 @@ class MealTypeCard extends StatelessWidget {
       itemBuilder: (context, index) {
         final itemMeal = mealTypes[index];
         final itemIcon = icons[index];
-        return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 20.0),
-          color: Colors.white,
-          width: 100.0,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ImageIcon(itemIcon,
-                  color: Theme.of(context).primaryColor, size: 50),
-              Text(itemMeal,
-                  style: TextStyle(
-                      color: Colors.grey.shade800,
-                      fontWeight: FontWeight.w600)),
-            ],
+        return InkWell(
+          onTap: () async {
+            await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => SearchPage(
+                  mealType: itemMeal, count: 10,
+                ),
+              ),
+            );
+          },
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20.0),
+            color: Colors.white,
+            width: 100.0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ImageIcon(itemIcon,
+                    color: Theme.of(context).primaryColor, size: 50),
+                Text(itemMeal,
+                    style: TextStyle(
+                        color: Colors.grey.shade800,
+                        fontWeight: FontWeight.w600)),
+              ],
+            ),
           ),
         );
       },

@@ -174,11 +174,11 @@ class APIService {
   Future<Search> fetchResult(int number, {String? query, String? cuisine, String? diet, String? intolerances, String? mealType}) async {
     Map<String, String?> parameters = {
       'addRecipeInformation': 'true',
-      'query': query == null ? ' ' : query,
-      'cuisine': cuisine == null ? ' ' : cuisine,
-      'diet': diet == null ? ' ' : diet,
-      'intolerances': intolerances == null ? ' ' : intolerances,
-      'type': mealType == null ? ' ' : mealType,
+      'query': query,
+      'cuisine': cuisine,
+      'diet': diet,
+      'intolerances': intolerances,
+      'type': mealType,
       'number': number.toString(),
       'apiKey': apiKey,
     };

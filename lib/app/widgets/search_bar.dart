@@ -1,22 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:recipea_app/app/ui/search/view/search_page.dart';
 
 class SearchBar extends StatelessWidget {
   const SearchBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final _controller = TextEditingController();
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Row(
         children: [
           Expanded(
             child: TextField(
+              controller: _controller,
               decoration: InputDecoration(
+                focusColor: Theme.of(context).highlightColor,
                   fillColor: Colors.white,
                   filled: true,
-                  prefixIcon: const Icon(
-                    Icons.search_outlined,
-                    color: Colors.black,
+                  prefixIcon: IconButton(
+                    onPressed: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => SearchPage(
+                            query: _controller.text, count: 10,
+                          ),
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.search_outlined, color: Colors.black),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey.shade200),

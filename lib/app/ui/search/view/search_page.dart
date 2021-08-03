@@ -1,180 +1,133 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'package:recipea_app/app/ui/recipe_manager/view/recipe_details_page.dart';
 import 'package:recipea_app/app/utils/constant/constants.dart';
-import 'package:recipea_app/models/recipe_search_model.dart';
+import 'package:recipea_app/models/models.dart';
 import 'package:recipea_app/services/spooncular_api.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({
-    Key? key,
-    this.query,
-    this.cuisine,
-    this.diet,
-    this.intolerances,
-    this.mealType,
-  }) : super(key: key);
+  SearchPage(
+      {Key? key,
+      this.query,
+      this.cuisine,
+      this.diet,
+      this.intolerances,
+      this.mealType,
+      required this.count})
+      : super(key: key);
 
-  final String? query;
-  final String? cuisine;
-  final String? diet;
-  final String? intolerances;
-  final String? mealType;
+  late String? query;
+  late String? cuisine;
+  late String? diet;
+  late String? intolerances;
+  late String? mealType;
+  final int? count;
 
   @override
   _SearchPageState createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final _controller = TextEditingController();
-  final _controllerScroll = new ScrollController();
+  TextEditingController _searchQueryController = TextEditingController();
+  ScrollController _scrollController = ScrollController();
+  late FocusNode _focusNode;
+  String searchQuery = "Search query";
+  late Search _recipeList;
+  late final int _count = 10;
+  bool _isLoading = true;
+  bool _isSearching = false;
 
-  //url
-  String query = "";
-  int itemSize = 100;
-  int offset = 0;
-
-  final String baseUrl = 'https://api.spoonacular.com/recipes/search?query=';
-  final String key = "&apiKey=29a5a1b2275545d7b607db2725e81016";
-  String url = "";
-  String number = "&number=";
-
-  String type = "&type=";
-  String cuisine = "&cuisine=";
-  String diet = "&diet=";
-  String intolerances = "&intolerances=";
-  String? mealType = "";
-  String? dietType = "";
-  String? cuisineType = "";
-  String? intoleranceType = "";
-
-  int numberValue = 10;
-
-  bool isEndScroll = true;
-
-  //is find button to change gradient color
-  bool isFindButton = true;
-
-  // count total result after change textfield
-  bool isClickable = true;
-
-  //dialog title value
-  String? _dialogValue;
-
-  //focus node to hide/show keyboard
-  final focusNode = FocusNode();
-
-  int? totalResult = 10;
-  Future<Search>? futureSearch;
+  Future<void> getRecipes(
+      count, query, cuisine, diet, intolerances, mealType) async {
+    _recipeList = await APIService.instance.fetchResult(count,
+        query: query,
+        cuisine: cuisine,
+        diet: diet,
+        intolerances: intolerances,
+        mealType: mealType);
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   void initState() {
-    print('init State');
-    totalResult = 10;
-    focusNode.unfocus();
+    getRecipes(widget.count, widget.query, widget.cuisine, widget.diet,
+        widget.intolerances, widget.mealType);
+    _focusNode = FocusNode();
     super.initState();
-  }
-
-  Future<Search> _fetchSearch() async {
-    setState(() {
-      if (mealType == null && dietType == null && intoleranceType == null && cuisineType == null)
-        url =
-            baseUrl + _controller.text + number + numberValue.toString() + key;
-      else
-        url = baseUrl +
-            _controller.text +
-            number +
-            numberValue.toString() +
-            cuisine +
-            cuisineType! +
-            key;
-    });
-
-    print('url search: $url');
-    print('total Search: $totalResult');
-    print('clickable: $isClickable');
-
-    http.Response response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      var json = jsonDecode(response.body);
-      return Search.fromJson(json);
-    } else {
-      throw Exception('failed to load search recipe');
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        children: <Widget>[
+        children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      bottomRight: Radius.circular(10),
-                      topRight: Radius.circular(10),
+              Stack(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          bottomRight: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                        border: Border.all(
+                          color: Colors.grey.withOpacity(.4),
+                          width: 1,
+                        )),
+                    child: TextField(
+                      cursorColor: Colors.black,
+                      focusNode: _focusNode,
+                      onChanged: (text) {
+                        getRecipes(widget.count, widget.query, widget.cuisine,
+                            widget.diet, widget.intolerances, widget.mealType);
+                        setState(() {
+                          widget.query = _searchQueryController.text;
+                        });
+                      },
+                      controller: _searchQueryController,
+                      keyboardType: TextInputType.text,
+                      textAlign: TextAlign.center,
+                      autocorrect: false,
+                      textCapitalization: TextCapitalization.words,
+                      decoration: InputDecoration(
+                        focusColor: Theme.of(context).highlightColor,
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: InputBorder.none,
+                        hintText: 'Search...',
+                        hintMaxLines: 1,
+                        hintStyle: TextStyle(
+                            color: Colors.grey.withOpacity(.4), fontSize: 15),
+                      ),
                     ),
-                    border: Border.all(
-                      color: Colors.grey.withOpacity(.4),
-                      width: 1,
-                    )),
-                child: TextField(
-                  onChanged: (text) {
-                    _fetchSearch();
-                    setState(() {
-                      query = _controller.text;
-                      setState(() {
-                        numberValue = 10;
-                        url = baseUrl +
-                            query +
-                            number +
-                            numberValue.toString() +
-                            key;
-                      });
-                    });
-                  },
-                  controller: _controller,
-                  keyboardType: TextInputType.text,
-                  textAlign: TextAlign.center,
-                  autocorrect: false,
-                  textCapitalization: TextCapitalization.words,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    prefixIcon: IconButton(
-                        icon: Icon(Icons.arrow_back_ios_outlined),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        }),
-                    suffixIcon: IconButton(
-                        icon: Icon(Icons.tune),
-                        onPressed: () {
-                          _showBottomSheet(context);
-                        }),
-                    hintText: 'Search...',
-                    hintMaxLines: 1,
-                    hintStyle: TextStyle(
-                        color: Colors.grey.withOpacity(.4), fontSize: 15),
-                    fillColor: Colors.white,
-                    filled: true,
-                    alignLabelWithHint: true,
                   ),
-                ),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.arrow_back_ios_outlined),
+                          onPressed: () {
+                            FocusScope.of(context).requestFocus(FocusNode());
+                            Navigator.pop(context);
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.tune),
+                          onPressed: () {
+                            FocusScope.of(context).requestFocus(FocusNode());
+                            _showBottomSheet(context);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -182,103 +135,80 @@ class _SearchPageState extends State<SearchPage> {
             height: MediaQuery.of(context).size.height - 122,
             padding: EdgeInsets.only(bottom: 40),
             width: double.infinity,
-            child: FutureBuilder(
-              future: _fetchSearch(),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  Search search = snapshot.data;
-                  totalResult = search.totalResults;
-
-                  return ListView.builder(
-                      itemCount: search.result!.length,
-                      controller: _controllerScroll,
-                      //ToDo put own card widget
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: <Widget>[
-                            InkWell(
-                              splashColor: Colors.blue,
-                              onTap: () async {
-                                var recipe = await APIService.instance
-                                    .fetchRecipe(
-                                        search.result![index].id.toString());
-                                var nutrients = await APIService.instance
-                                    .fetchNutrients(
-                                        search.result![index].id.toString());
-                                await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => RecipeDetails(
-                                      recipe: recipe,
-                                      nutrients: nutrients,
-                                      // analyzedInstructions: instructions,
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: ListTile(
-                                leading: Container(
-                                  width: 100.0,
-                                  height: 100.0,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(search.baseUri! +
-                                          search.result![index].image!),
-                                      repeat: ImageRepeat.repeat,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                title: Text('${search.result![index].title}',
-                                    overflow: TextOverflow.ellipsis),
-                                subtitle: RichText(
-                                  text: TextSpan(
-                                    children: [
-                                      WidgetSpan(
-                                        child: ImageIcon(
-                                            (AssetImage(
-                                                'assets/icons/serving.png')),
-                                            size: 18),
-                                      ),
-                                      TextSpan(
-                                          text:
-                                              ' ${search.result![index].servings} '
-                                                  .toString(),
-                                          style:
-                                              TextStyle(color: Colors.black)),
-                                      WidgetSpan(
-                                        child: Icon(Icons.schedule, size: 18),
-                                      ),
-                                      TextSpan(
-                                          text:
-                                              ' ${search.result![index].readyInMinutes}'
-                                                  .toString(),
-                                          style:
-                                              TextStyle(color: Colors.black)),
-                                      TextSpan(
-                                          text: ' min',
-                                          style:
-                                              TextStyle(color: Colors.black)),
-                                    ],
-                                  ),
-                                ),
+            child: _isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(color: Colors.grey))
+                : ListView.builder(
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    controller: _scrollController,
+                    physics: BouncingScrollPhysics(),
+                    itemCount: _recipeList.result!.length,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () async {
+                          var recipe = await APIService.instance.fetchRecipe(
+                              _recipeList.result![index].id.toString());
+                          var nutrients = await APIService.instance
+                              .fetchNutrients(
+                                  _recipeList.result![index].id.toString());
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => RecipeDetails(
+                                recipe: recipe,
+                                nutrients: nutrients,
+                                // analyzedInstructions: instructions,
                               ),
                             ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: Divider(color: Colors.grey),
+                          );
+                        },
+                        child: ListTile(
+                          leading: Container(
+                            width: 100.0,
+                            height: 100.0,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                    _recipeList.result![index].image!),
+                                repeat: ImageRepeat.repeat,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ],
-                        );
-                      });
-                } else if (snapshot.hasError) {
-                  return Center(
-                      child: Text('An error ocur: ${snapshot.error}'));
-                }
-                return Center(child: Container());
-              },
-            ),
+                          ),
+                          title: Text('${_recipeList.result![index].title}',
+                              overflow: TextOverflow.ellipsis),
+                          subtitle: RichText(
+                            text: TextSpan(
+                              children: [
+                                WidgetSpan(
+                                  child: ImageIcon(
+                                      (AssetImage('assets/icons/serving.png')),
+                                      size: 18),
+                                ),
+                                TextSpan(
+                                    text:
+                                        ' ${_recipeList.result![index].servings} '
+                                            .toString(),
+                                    style: TextStyle(color: Colors.black)),
+                                WidgetSpan(
+                                  child: Icon(Icons.schedule, size: 18),
+                                ),
+                                TextSpan(
+                                    text:
+                                        ' ${_recipeList.result![index].readyInMinutes}'
+                                            .toString(),
+                                    style: TextStyle(color: Colors.black)),
+                                TextSpan(
+                                    text: ' min',
+                                    style: TextStyle(color: Colors.black)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
           ),
         ],
       ),
@@ -289,32 +219,28 @@ class _SearchPageState extends State<SearchPage> {
     showModalBottomSheet(
         context: context,
         builder: (context) {
-          return GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              mainAxisExtent: MediaQuery.of(context).size.height * 0.05,
+          return Container(
+            width: 10,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              itemCount: mealTypes.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      widget.mealType = mealTypes[index];
+                      _focusNode.unfocus();
+                    });
+                    print(widget.mealType);
+                  },
+                  child: Chip(
+                    label: Text(mealTypes[index]),
+                  ),
+                );
+              },
             ),
-            itemCount: mealTypes.length,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _dialogValue = mealTypes[index];
-                    focusNode.unfocus();
-
-                    //set for controller
-                    mealType = _dialogValue!;
-                  });
-                  print(
-                      'dialog value title: $_dialogValue dialog value controller text: ${_controller.text}');
-                },
-                child: Chip(
-                  label: Text(mealTypes[index]),
-                ),
-              );
-            },
           );
         });
-    print(mealType);
   }
 }
