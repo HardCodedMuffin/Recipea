@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:recipea_app/app/ui/recipe_manager/view/db_add_item_form.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 final CollectionReference _mainCollection = _firestore.collection('notes');
@@ -9,6 +10,8 @@ class Database {
   static Future<void> addItem({
     required String title,
     required String description,
+    required DynamicList ingredientList,
+    required DynamicList instructionList,
   }) async {
     DocumentReference documentReferencer =
         _mainCollection.doc(userUid).collection('items').doc();
@@ -16,11 +19,13 @@ class Database {
     Map<String, dynamic> data = <String, dynamic>{
       "title": title,
       "description": description,
+      "ingredients": ingredientList,
+      "steps": instructionList,
     };
 
     await documentReferencer
         .set(data)
-        .whenComplete(() => print("Note item added to the database"))
+        .whenComplete(() => print("Recipe added to the database"))
         .catchError((e) => print(e));
   }
 
@@ -28,6 +33,8 @@ class Database {
     required String title,
     required String description,
     required String docId,
+    required DynamicList ingredientList,
+    required DynamicList instructionList,
   }) async {
     DocumentReference documentReferencer =
         _mainCollection.doc(userUid).collection('items').doc(docId);
@@ -35,11 +42,13 @@ class Database {
     Map<String, dynamic> data = <String, dynamic>{
       "title": title,
       "description": description,
+      "ingredients": ingredientList,
+      "steps": instructionList,
     };
 
     await documentReferencer
         .update(data)
-        .whenComplete(() => print("Note item updated in the database"))
+        .whenComplete(() => print("Recipe updated in the database"))
         .catchError((e) => print(e));
   }
 
@@ -58,7 +67,7 @@ class Database {
 
     await documentReferencer
         .delete()
-        .whenComplete(() => print('Note item deleted from the database'))
+        .whenComplete(() => print('Recipe deleted from the database'))
         .catchError((e) => print(e));
   }
 }

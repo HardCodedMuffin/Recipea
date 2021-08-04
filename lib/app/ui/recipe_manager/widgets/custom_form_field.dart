@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:recipea_app/app/utils/config/theme.dart';
 
 class CustomFormField extends StatelessWidget {
   const CustomFormField({
@@ -11,56 +10,54 @@ class CustomFormField extends StatelessWidget {
     required String label,
     required String hint,
     required Function(String value) validator,
-    required Color fillColor,
+    required this.onSaved,
     this.isObscure = false,
     this.isCapitalized = false,
     this.maxLines = 1,
     this.isLabelEnabled = true,
-  })  : _textController = controller,
-        _fieldFocusNode = focusNode,
-        _keyboardType = keyboardType,
+  })  : _controller = controller,
+        _focusNode = focusNode,
+        keyboardType = keyboardType,
         _inputAction = inputAction,
         _label = label,
         _hint = hint,
-        _fillColor = fillColor,
         _validator = validator,
         super(key: key);
 
-  final TextEditingController _textController;
-  final FocusNode _fieldFocusNode;
-  final TextInputType _keyboardType;
+  final TextEditingController _controller;
+  final FocusNode _focusNode;
+  final TextInputType keyboardType;
   final TextInputAction _inputAction;
   final String _label;
   final String _hint;
-  final Color _fillColor;
   final bool isObscure;
   final bool isCapitalized;
   final int maxLines;
   final bool isLabelEnabled;
   final Function(String) _validator;
+  final FormFieldSetter<String>? onSaved;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       maxLines: maxLines,
-      controller: _textController,
-      focusNode: _fieldFocusNode,
-      keyboardType: _keyboardType,
+      controller: _controller,
+      focusNode: _focusNode,
+      keyboardType: keyboardType,
       obscureText: isObscure,
       textCapitalization:
           isCapitalized ? TextCapitalization.words : TextCapitalization.none,
       textInputAction: _inputAction,
-      cursorColor: Theme.of(context).primaryColorDark,
+      cursorColor: Theme.of(context).highlightColor,
       validator: (value) => _validator(value!),
+      onSaved: onSaved,
       decoration: InputDecoration(
         labelText: isLabelEnabled ? _label : null,
-        labelStyle: TextStyle(color: Palette.firebaseYellow),
+        labelStyle: TextStyle(color: Theme.of(context).primaryColor),
         hintText: _hint,
         hintStyle: TextStyle(
-          color: Theme.of(context).primaryColorDark.withOpacity(0.5),
+          color: Colors.grey.shade500,
         ),
-        fillColor: _fillColor,
-        filled: true,
         errorStyle: TextStyle(
           color: Colors.redAccent,
           fontWeight: FontWeight.bold,
@@ -68,14 +65,14 @@ class CustomFormField extends StatelessWidget {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.0),
           borderSide: BorderSide(
-            color: Theme.of(context).primaryColorDark,
+            color: Theme.of(context).highlightColor,
             width: 2,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.0),
           borderSide: BorderSide(
-            color: Theme.of(context).primaryColorDark.withOpacity(0.5),
+            color: Colors.grey.shade500,
           ),
         ),
         errorBorder: OutlineInputBorder(

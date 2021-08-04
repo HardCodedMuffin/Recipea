@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:recipea_app/app/ui/home/home.dart';
 import 'package:recipea_app/app/ui/meal_planner/meal_planner.dart';
 import 'package:recipea_app/app/ui/profile/profile.dart';
-import 'package:recipea_app/app/ui/search/search.dart';
+import 'package:recipea_app/app/ui/recipe_manager/view/db_add_item_form.dart';
+import 'package:recipea_app/app/ui/recipe_manager/widgets/build_dynamic_list.dart';
 import 'package:recipea_app/app/ui/search/view/search_by_cuisine.dart';
 
 class AppNavigation extends StatefulWidget {
@@ -43,7 +44,7 @@ class AppNavigationState extends State<AppNavigation> {
     _page = widget.initialPage;
     _pageController = PageController(initialPage: _page);
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      _pageKeys[0].currentState!;
+      _pageKeys[0].currentState;
     });
   }
 
@@ -57,7 +58,7 @@ class AppNavigationState extends State<AppNavigation> {
         children: <Widget>[
           HomePage(key: _pageKeys[0]),
           SearchByCuisine(key: _pageKeys[1]),
-          SearchPage(key: _pageKeys[2], count: 10),
+          AddRecipePage(key: _pageKeys[2]),
           MealPlannerPage(key: _pageKeys[3]),
           ProfilePage(key: _pageKeys[4])
         ],
@@ -92,7 +93,7 @@ class AppNavigationState extends State<AppNavigation> {
 
   void _onPageChanged(int page) {
     setState(() => _page = page);
-    _pageKeys[_page].currentState!;
+    _pageKeys[_page].currentState;
   }
 
   void _onBottomNavItemPressed(int index) {
