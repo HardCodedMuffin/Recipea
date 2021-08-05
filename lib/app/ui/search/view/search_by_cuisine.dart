@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recipea_app/app/ui/search/view/search_page.dart';
 import 'package:recipea_app/app/utils/constant/constants.dart';
-import 'package:recipea_app/services/spooncular_api.dart';
 
 class SearchByCuisine extends StatefulWidget {
   const SearchByCuisine({Key? key}) : super(key: key);
@@ -51,6 +50,7 @@ class _SearchByCuisineState extends State<SearchByCuisine> {
           context,
           MaterialPageRoute(
             builder: (_) => SearchPage(
+              query: null,
               cuisine: title, count: 10,
             ),
           ),

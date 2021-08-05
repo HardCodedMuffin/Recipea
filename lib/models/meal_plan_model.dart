@@ -5,7 +5,6 @@
 import 'dart:convert';
 
 import 'meal_model.dart';
-import 'nutrients_model.dart';
 
 MealPlan mealPlanFromJson(String str) => MealPlan.fromJson(json.decode(str));
 

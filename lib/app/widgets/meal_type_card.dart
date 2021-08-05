@@ -20,6 +20,7 @@ class MealTypeCard extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (_) => SearchPage(
+                  query: null,
                   mealType: itemMeal, count: 10,
                 ),
               ),

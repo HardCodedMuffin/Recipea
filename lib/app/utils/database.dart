@@ -1,26 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:recipea_app/app/ui/recipe_manager/view/db_add_item_form.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-final CollectionReference _mainCollection = _firestore.collection('notes');
+final CollectionReference _mainCollection = _firestore.collection('cookbook');
 
 class Database {
   static String? userUid;
 
   static Future<void> addItem({
     required String title,
-    required String description,
-    required DynamicList ingredientList,
-    required DynamicList instructionList,
+    required String summary,
+    required String ingredient,
+    required String instruction,
   }) async {
     DocumentReference documentReferencer =
-        _mainCollection.doc(userUid).collection('items').doc();
+        _mainCollection.doc(userUid).collection('recipes').doc();
 
     Map<String, dynamic> data = <String, dynamic>{
       "title": title,
-      "description": description,
-      "ingredients": ingredientList,
-      "steps": instructionList,
+      "summary": summary,
+      "ingredients": ingredient,
+      "instructions": instruction,
     };
 
     await documentReferencer
@@ -31,19 +30,19 @@ class Database {
 
   static Future<void> updateItem({
     required String title,
-    required String description,
+    required String summary,
+    required String ingredient,
+    required String instruction,
     required String docId,
-    required DynamicList ingredientList,
-    required DynamicList instructionList,
   }) async {
     DocumentReference documentReferencer =
-        _mainCollection.doc(userUid).collection('items').doc(docId);
+        _mainCollection.doc(userUid).collection('recipes').doc(docId);
 
     Map<String, dynamic> data = <String, dynamic>{
       "title": title,
-      "description": description,
-      "ingredients": ingredientList,
-      "steps": instructionList,
+      "summary": summary,
+      "ingredients": ingredient,
+      "instructions": instruction,
     };
 
     await documentReferencer
@@ -54,7 +53,7 @@ class Database {
 
   static Stream<QuerySnapshot> readItems() {
     CollectionReference notesItemCollection =
-        _mainCollection.doc(userUid).collection('items');
+        _mainCollection.doc(userUid).collection('recipes');
 
     return notesItemCollection.snapshots();
   }
@@ -63,7 +62,46 @@ class Database {
     required String docId,
   }) async {
     DocumentReference documentReferencer =
-        _mainCollection.doc(userUid).collection('items').doc(docId);
+        _mainCollection.doc(userUid).collection('recipes').doc(docId);
+
+    await documentReferencer
+        .delete()
+        .whenComplete(() => print('Recipe deleted from the database'))
+        .catchError((e) => print(e));
+  }
+
+  static Future<void> savedItem({
+    required String id,
+    required String title,
+    required String imageUrl,
+  }) async {
+    DocumentReference documentReferencer =
+    _mainCollection.doc(userUid).collection('saved_recipes').doc();
+
+    Map<String, dynamic> data = <String, dynamic>{
+      "savedID": id,
+      "title": title,
+      "imageUrl": imageUrl,
+    };
+
+    await documentReferencer
+        .set(data)
+        .whenComplete(() => print("Recipe saved"))
+        .catchError((e) => print(e));
+  }
+
+  static Stream<QuerySnapshot> readSavedItem() {
+    CollectionReference notesItemCollection =
+    _mainCollection.doc(userUid).collection('saved_recipes');
+
+    return notesItemCollection.snapshots();
+  }
+
+  static Future<void> deleteSavedItem({
+    required String docId,
+  }) async {
+    DocumentReference documentReferencer =
+    _mainCollection.doc(userUid).collection('saved_recipes').doc(docId);
 
     await documentReferencer
         .delete()
@@ -71,3 +109,4 @@ class Database {
         .catchError((e) => print(e));
   }
 }
+

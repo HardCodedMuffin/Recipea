@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recipea_app/app/app.dart';
+import 'package:recipea_app/app/bloc/app_bloc.dart';
+import 'package:recipea_app/app/ui/recipe_manager/view/db_saved_item_screen.dart';
+import 'package:recipea_app/app/ui/recipe_manager/widgets/cookbook_details.dart';
 import 'package:recipea_app/app/utils/constant/constants.dart';
+import 'package:recipea_app/app/widgets/database/crud/saved_recipe_list.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -11,34 +15,21 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final List<Map> collections = [
-    {"title": "Food joint"},
-    {"title": "Photos"},
-    {"title": "Travel"},
-    {"title": "Nepal"},
-  ];
+  ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     final user = context.select((AppBloc bloc) => bloc.state.user);
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0.0,
-          backgroundColor: Colors.transparent,
-          actions: <Widget>[
-            IconButton(
-              key: const Key('homePage_logout_iconButton'),
-              icon: const Icon(Icons.exit_to_app),
-              onPressed: () =>
-                  context.read<AppBloc>().add(AppLogoutRequested()),
-            )
-          ],
-        ),
-        backgroundColor: Colors.grey.shade100,
-        extendBodyBehindAppBar: true,
-        extendBody: true,
-        body: SingleChildScrollView(
-          child: Column(
+        body: SafeArea(
+      child: ListView(
+        scrollDirection: Axis.vertical,
+        controller: _scrollController,
+        shrinkWrap: true,
+        padding: EdgeInsets.symmetric(vertical: 0.0),
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               ProfileHeader(
                 avatar: NetworkImage(user.photo!),
@@ -50,86 +41,45 @@ class _ProfilePageState extends State<ProfilePage> {
                     color: Colors.white,
                     shape: const CircleBorder(),
                     elevation: 0,
-                    onPressed: () {},
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => SavedItemScreen(),
+                      ),
+                    ),
                     child: const Icon(Icons.edit),
                   )
                 ],
               ),
-              const SizedBox(height: 10.0),
-              _buildSectionHeader(context),
-              _buildHorizontalList(),
-              const Divider(
-                height: 20,
-                thickness: 5,
-                indent: 20,
-                endIndent: 20,
-              ),
             ],
           ),
-        ));
-  }
-
-  Container _buildSectionHeader(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(
-            'My Recipes',
-            style: Theme.of(context).textTheme.headline6,
+          const SizedBox(height: 10.0),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: buildSection(context, 'My Recipes', CookBookList()),
           ),
-          TextButton(
-            onPressed: () {},
-            child: const Text(
-              'Create new',
-              style: TextStyle(color: Colors.blue),
-            ),
-          )
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: buildSection(context, 'Saved Recipes', SavedItemList()),
+          ),
         ],
       ),
-    );
+    ));
   }
 
-  Container _buildHorizontalList() {
-    return Container(
-      color: Colors.white,
-      height: 200.0,
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: ListView.builder(
-        physics: const BouncingScrollPhysics(),
-        scrollDirection: Axis.horizontal,
-        itemCount: collections.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-            width: 150.0,
-            height: 200.0,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(5.0),
-                    child: Image.network(
-                      'https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80',
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 5.0,
-                ),
-                Text(collections[index]['title'],
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1!
-                        .merge(TextStyle(color: Colors.grey.shade600)))
-              ],
-            ),
-          );
-        },
-      ),
+  Column buildSection(BuildContext context, String title, Widget widget) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Text(
+            title,
+            style: TextStyle(
+                fontSize: 20, color: Theme.of(context).primaryColorDark),
+          ),
+        ),
+        Container(height: 300, child: widget),
+      ],
     );
   }
 }
@@ -203,7 +153,18 @@ class ProfileHeader extends StatelessWidget {
               ]
             ],
           ),
-        )
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: IconButton(
+            key: const Key('homePage_logout_iconButton'),
+            icon: const Icon(
+              Icons.exit_to_app,
+              color: Colors.white,
+            ),
+            onPressed: () => context.read<AppBloc>().add(AppLogoutRequested()),
+          ),
+        ),
       ],
     );
   }

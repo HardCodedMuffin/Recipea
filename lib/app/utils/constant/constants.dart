@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
+final List<String> headers = ['cuisines', 'diets', 'intolerances', 'mealTypes'];
+
 final List<String> mealTypes = [
   'Appetizer',
   'Beverage',
@@ -95,7 +97,7 @@ const String banner =
     'https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80';
 
 final imgSrc = [
-  'https://globeafrique.com/wp-content/uploads/2019/06/FOODS-780x405.jpeg',
+  'https://cdn.shopify.com/s/files/1/0470/6313/8464/articles/Keesha_s_Kitchen_North_African_Cuisine_Moroccan_Food_Tajine_1024x1024.png?v=1615659695',
   'https://www.americarestaurant.ca/wp-content/uploads/2017/11/American-food-in-Canada.jpg',
   'https://qph.fs.quoracdn.net/main-qimg-4b9b9506613bba9c5503a69efc60ca51',
   'https://www.demandafrica.com/wp-content/uploads/2018/10/cajun-food-crawfish-plate.jpg',

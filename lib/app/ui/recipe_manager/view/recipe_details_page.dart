@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:html/parser.dart';
+import 'package:recipea_app/app/utils/database.dart';
 import 'package:recipea_app/models/instructions_model.dart';
 import 'package:recipea_app/models/nutrients_model.dart';
 import 'package:recipea_app/models/recipe_model.dart';
@@ -30,12 +31,15 @@ class _RecipeDetailsState extends State<RecipeDetails> {
   String? parsedInstructions;
   List<String>? steps;
 
+  bool isSaved = false;
+
   @override
   void initState() {
-    super.initState();
+    isSaved = false;
     parsedSummary = _parseHtmlString(widget.recipe.summary!);
     parsedInstructions = _parseHtmlString(widget.recipe.instructions!);
     steps = _iterateSteps(parsedInstructions!);
+    super.initState();
   }
 
   @override
@@ -105,10 +109,19 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                             ),
                             IconButton(
                               icon: const Icon(Icons.bookmark_add_outlined),
-                              color: Colors.redAccent,
-                              iconSize: 30,
-                              onPressed: () {},
-                            )
+                              color: isSaved ? Colors.black : Colors.red,
+                              onPressed: () async {
+                                isSaved = !isSaved;
+                                if (isSaved == true) {
+                                  await Database.savedItem(
+                                    id: widget.recipe.id.toString(),
+                                    title: widget.recipe.title!,
+                                    imageUrl: widget.recipe.image!,
+                                  );
+                                }
+                              },
+                              iconSize: 30.0,
+                            ),
                           ],
                         ),
                         // Subtitle
@@ -224,6 +237,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                         const SizedBox(
                           height: 30,
                         ),
+                        // Steps
                         Text(
                           'Steps',
                           style: GoogleFonts.roboto(
@@ -236,7 +250,6 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                         const SizedBox(
                           height: 30,
                         ),
-                        // Steps
                       ],
                     ),
                   ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:recipea_app/app/ui/recipe_manager/view/recipe_details_page.dart';
-import 'package:recipea_app/app/utils/constant/constants.dart';
 import 'package:recipea_app/models/models.dart';
 import 'package:recipea_app/services/spooncular_api.dart';
 
@@ -32,9 +31,7 @@ class _SearchPageState extends State<SearchPage> {
   late FocusNode _focusNode;
   String searchQuery = "Search query";
   late Search _recipeList;
-  late final int _count = 10;
   bool _isLoading = true;
-  bool _isSearching = false;
 
   Future<void> getRecipes(
       count, query, cuisine, diet, intolerances, mealType) async {
@@ -121,6 +118,7 @@ class _SearchPageState extends State<SearchPage> {
                           icon: Icon(Icons.tune),
                           onPressed: () {
                             FocusScope.of(context).requestFocus(FocusNode());
+                            //ToDo
                             _showBottomSheet(context);
                           },
                         ),
@@ -215,32 +213,195 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+  // _showBottomSheet(BuildContext context) {
+  //   showModalBottomSheet(
+  //       context: context,
+  //       builder: (context) {
+  //         return Container(
+  //           height: MediaQuery.of(context).size.height / 2,
+  //           child: GridView.builder(
+  //             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+  //                 crossAxisCount: 3, mainAxisSpacing: 0, crossAxisSpacing: 0, childAspectRatio: 5/3),
+  //             shrinkWrap: true,
+  //             scrollDirection: Axis.vertical,
+  //             padding: EdgeInsets.zero,
+  //             itemCount: mealTypes.length,
+  //             itemBuilder: (context, index) {
+  //               return GestureDetector(
+  //                 onTap: () {
+  //                   setState(() {
+  //                     widget.mealType = mealTypes[index];
+  //                     _focusNode.unfocus();
+  //                     getRecipes(
+  //                         widget.count,
+  //                         widget.query,
+  //                         widget.cuisine,
+  //                         widget.diet,
+  //                         widget.intolerances,
+  //                         widget.mealType);
+  //                   });
+  //                 },
+  //                 child: Container(
+  //                   margin: EdgeInsets.zero,
+  //                   child: Text(mealTypes[index]),
+  //                 ),
+  //               );
+  //             },
+  //           ),
+  //         );
+  //       });
+  // }
+
   _showBottomSheet(BuildContext context) {
     showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return Container(
-            width: 10,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              itemCount: mealTypes.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      widget.mealType = mealTypes[index];
-                      _focusNode.unfocus();
-                    });
-                    print(widget.mealType);
-                  },
-                  child: Chip(
-                    label: Text(mealTypes[index]),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      context: context,
+      builder: (context) {
+        return Container(
+          height: 350.0,
+          color: Colors.transparent,
+          child: ListView(
+            children: [
+              Column(
+                children: <Widget>[
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: _titleContainer("Meal Type"),
+                    ),
                   ),
-                );
-              },
-            ),
-          );
-        });
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        child: Wrap(
+                          spacing: 5.0,
+                          runSpacing: 5.0,
+                          children: <Widget>[
+                            FilterChipWidget(chipName: 'Appetizer'),
+                            FilterChipWidget(chipName: 'Beverage'),
+                            FilterChipWidget(chipName: 'Bread'),
+                            FilterChipWidget(chipName: 'Breakfast'),
+                            FilterChipWidget(chipName: 'Dessert'),
+                            FilterChipWidget(chipName: 'Drink'),
+                            FilterChipWidget(chipName: 'Finger food'),
+                            FilterChipWidget(chipName: 'Main course'),
+                            FilterChipWidget(chipName: 'Marinade'),
+                            FilterChipWidget(chipName: 'Salad'),
+                            FilterChipWidget(chipName: 'Sauce'),
+                            FilterChipWidget(chipName: 'Side dish'),
+                            FilterChipWidget(chipName: 'Snack'),
+                            FilterChipWidget(chipName: 'Soup'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Divider(
+                      color: Colors.grey,
+                      height: 10.0,
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: _titleContainer('Intolerances'),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        child: Wrap(
+                          spacing: 5.0,
+                          runSpacing: 5.0,
+                          children: <Widget>[
+                            FilterChipWidget(chipName: 'Dairy'),
+                            FilterChipWidget(chipName: 'Egg'),
+                            FilterChipWidget(chipName: 'Gluten'),
+                            FilterChipWidget(chipName: 'Grain'),
+                            FilterChipWidget(chipName: 'Peanut'),
+                            FilterChipWidget(chipName: 'Seafood'),
+                            FilterChipWidget(chipName: 'Sesame'),
+                            FilterChipWidget(chipName: 'Shellfish'),
+                            FilterChipWidget(chipName: 'Soy'),
+                            FilterChipWidget(chipName: 'Sulfite'),
+                            FilterChipWidget(chipName: 'Tree Nut'),
+                            FilterChipWidget(chipName: 'Wheat'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Divider(
+                      color: Colors.grey,
+                      height: 10.0,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _titleContainer(String myTitle) {
+    return Text(
+      myTitle,
+      style: TextStyle(
+          color: Colors.black,
+          fontSize: 16.0,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.5),
+    );
+  }
+}
+
+class FilterChipWidget extends StatefulWidget {
+  final String chipName;
+
+  FilterChipWidget({Key? key, required this.chipName}) : super(key: key);
+
+  @override
+  _FilterChipWidgetState createState() => _FilterChipWidgetState();
+}
+
+class _FilterChipWidgetState extends State<FilterChipWidget> {
+  var _isSelected = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return buildFilterChip(context);
+  }
+
+  FilterChip buildFilterChip(BuildContext context) {
+    return FilterChip(
+    label: Text(widget.chipName),
+    labelStyle: TextStyle(
+        color: Theme.of(context).primaryColor,
+        fontSize: 14.0,
+        fontWeight: FontWeight.w500),
+    selected: _isSelected,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(30.0),
+    ),
+    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+    onSelected: (isSelected) {
+      setState(() {
+        _isSelected = isSelected;
+      });
+    },
+    selectedColor: Color(0xfffddfed),
+  );
   }
 }

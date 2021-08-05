@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:recipea_app/app/ui/recipe_manager/recipe_manager.dart';
+import 'package:recipea_app/app/utils/database.dart';
 import 'package:recipea_app/services/spooncular_api.dart';
 
-class RecipeCard extends StatelessWidget {
+class RecipeCard extends StatefulWidget {
   const RecipeCard({
     Key? key,
     required this.id,
@@ -19,15 +20,20 @@ class RecipeCard extends StatelessWidget {
   final String thumbnailUrl;
 
   @override
+  _RecipeCardState createState() => _RecipeCardState();
+}
+
+class _RecipeCardState extends State<RecipeCard> {
+  bool isSaved = false;
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        var recipe = await APIService.instance
-            .fetchRecipe(
-           id.toString());
-        var nutrients = await APIService.instance
-            .fetchNutrients(
-            id.toString());
+        var recipe =
+            await APIService.instance.fetchRecipe(widget.id.toString());
+        var nutrients =
+            await APIService.instance.fetchNutrients(widget.id.toString());
         await Navigator.push(
           context,
           MaterialPageRoute(
@@ -62,7 +68,7 @@ class RecipeCard extends StatelessWidget {
               Colors.black.withOpacity(0.5),
               BlendMode.multiply,
             ),
-            image: NetworkImage(thumbnailUrl),
+            image: NetworkImage(widget.thumbnailUrl),
             fit: BoxFit.cover,
           ),
         ),
@@ -70,17 +76,20 @@ class RecipeCard extends StatelessWidget {
           children: [
             Align(
               alignment: Alignment.topLeft,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.bookmark),
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    onPressed: () {},
-                    iconSize: 18.0,
-                  ),
-                  const SizedBox(width: 7),
-                ],
+              child: IconButton(
+                icon: const Icon(Icons.bookmark),
+                color: isSaved ? Colors.red : Colors.white,
+                onPressed: () async {
+                  isSaved = !isSaved;
+                  if (isSaved == true) {
+                    await Database.savedItem(
+                      id: widget.id.toString(),
+                      title: widget.title,
+                      imageUrl: widget.thumbnailUrl,
+                    );
+                  }
+                },
+                iconSize: 18.0,
               ),
             ),
             Align(
@@ -88,7 +97,7 @@ class RecipeCard extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5.0),
                 child: Text(
-                  title,
+                  widget.title,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 19,
@@ -120,7 +129,7 @@ class RecipeCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 7),
                         Text(
-                          '${double.parse((rating*0.1).toStringAsFixed(2))}/10',
+                          '${double.parse((widget.rating * 0.1).toStringAsFixed(2))}/10',
                           style: const TextStyle(color: Colors.white),
                         ),
                       ],
@@ -142,7 +151,7 @@ class RecipeCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 7),
                         Text(
-                          '$cookTime min',
+                          '${widget.cookTime} min',
                           style: const TextStyle(color: Colors.white),
                         ),
                       ],

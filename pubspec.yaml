@@ -15,10 +15,8 @@ dependencies:
   authentication_repository:
     path: packages/authentication_repository
   cupertino_icons: ^1.0.3
-  firebase_core: ^1.4.0
   firebase_auth: ^3.0.1
   google_sign_in: ^5.0.5
-  cloud_firestore: ^2.4.0
   bloc: ^7.0.0
   equatable: ^2.0.3
   flow_builder: ^0.0.3
@@ -35,8 +33,15 @@ dependencies:
   anim_search_bar: ^2.0.2
   provider: ^5.0.0
   html: ^0.15.0
-  webview_flutter: ^2.0.10
-  url_launcher: ^6.0.9
+
+  firebase_core: ^1.0.1
+  cloud_firestore: ^1.0.1
+  firebase_storage: ^10.0.1
+  image_picker: ^0.8.3
+  date_format: ^2.0.2
+  intl: ^0.17.0
+  permission_handler: ^8.1.4+2
+
 
 dev_dependencies:
   flutter_test:

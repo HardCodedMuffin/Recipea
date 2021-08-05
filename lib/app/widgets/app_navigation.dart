@@ -1,11 +1,13 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recipea_app/app/bloc/app_bloc.dart';
 import 'package:recipea_app/app/ui/home/home.dart';
 import 'package:recipea_app/app/ui/meal_planner/meal_planner.dart';
 import 'package:recipea_app/app/ui/profile/profile.dart';
-import 'package:recipea_app/app/ui/recipe_manager/view/db_add_item_form.dart';
-import 'package:recipea_app/app/ui/recipe_manager/widgets/build_dynamic_list.dart';
+import 'package:recipea_app/app/ui/recipe_manager/view/db_dashboard_screen.dart';
 import 'package:recipea_app/app/ui/search/view/search_by_cuisine.dart';
+import 'package:recipea_app/app/utils/database.dart';
 
 class AppNavigation extends StatefulWidget {
   const AppNavigation({
@@ -40,16 +42,18 @@ class AppNavigationState extends State<AppNavigation> {
 
   @override
   void initState() {
-    super.initState();
     _page = widget.initialPage;
     _pageController = PageController(initialPage: _page);
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       _pageKeys[0].currentState;
+      super.initState();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    var user = context.select((AppBloc bloc) => bloc.state.user);
+    Database.userUid = user.id;
     return Scaffold(
       extendBody: true,
       body: PageView(
@@ -58,7 +62,7 @@ class AppNavigationState extends State<AppNavigation> {
         children: <Widget>[
           HomePage(key: _pageKeys[0]),
           SearchByCuisine(key: _pageKeys[1]),
-          AddRecipePage(key: _pageKeys[2]),
+          DashboardScreen(key: _pageKeys[2]),
           MealPlannerPage(key: _pageKeys[3]),
           ProfilePage(key: _pageKeys[4])
         ],
